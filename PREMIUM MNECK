@@ -1,3 +1,0 @@
-allowedUserIds = {
-    "739486",
-}
