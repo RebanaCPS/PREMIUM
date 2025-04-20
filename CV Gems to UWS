@@ -1,0 +1,53 @@
+AddHook("onvariant", "block", function(var)
+if var[0] == "OnDialogRequest"  then
+return true
+end
+return false
+end)
+local function FIND_ITEM(id)
+    for _, item in pairs(GetInventory()) do
+        if item.id == id then
+            return item.amount
+        end    
+    end
+    return 0
+end
+
+function wrench(x, y)
+    pkt = {}
+    pkt.type = 3
+    pkt.value = 32
+    pkt.px = x
+    pkt.py = y
+    pkt.x = x * 32
+    pkt.y = y * 32
+    SendPacketRaw(false, pkt)
+end
+
+local function convertTaxToPGems()
+    local XTELEPHONE = GetLocal().pos.x // 32 + 1
+    local YTELEPHONE = GetLocal().pos.y // 32
+    
+    wrench(XTELEPHONE, YTELEPHONE)
+    
+    SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|12345|\nx|"..XTELEPHONE.."|\ny|"..YTELEPHONE.."|\nbuttonClicked|tax_to_pgems\n\n")
+    Sleep(DELAY)
+end
+
+local function convertPGemsToUWS()
+    local XPRINCESS = GetLocal().pos.x // 32 - 1
+    local YPRINCESS = GetLocal().pos.y // 32
+    
+    wrench(XPRINCESS, YPRINCESS)
+    SendPacket(2, "action|dialog_return\ndialog_name|princess_dialog\nx|"..XPRINCESS.."|\ny|"..YPRINCESS.."|\nbuyitem|actuallybuyitem14|\nbuy_count|2\n")
+    Sleep(DELAY)
+end
+
+while true do
+    if FIND_ITEM(15422) >= 250 then
+        convertPGemsToUWS()
+    else
+        convertTaxToPGems()
+    end
+    Sleep(DELAY)
+end
