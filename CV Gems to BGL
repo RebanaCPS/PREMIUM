@@ -1,0 +1,33 @@
+function cek(id)
+count = 0
+for _, inv in pairs(GetInventory()) do
+if inv.id == id then
+count = count + inv.amount
+end
+end
+return count
+end
+local CONVERT = false
+
+AddHook("onvariant", "BUYDL", function(var)
+if var[0] == "OnDialogRequest" and var[1]:find("Telephone") then
+XX = var[1]:match("embed_data|x|(%d+)")
+YY = var[1]:match("embed_data|y|(%d+)")
+CONVERT = true
+return true
+end
+if var[0] == "OnDialogRequest" and var[1]:find("Diamond Lock") then
+return true
+end
+end)
+
+while true do
+if CONVERT then
+SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. XX .."|\ny|".. YY .."|\nbuttonClicked|bglconvert2")
+Sleep(delay)
+end
+if cek(7188) >= 100 then
+SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl")
+Sleep(delay)
+end
+end
